@@ -9,7 +9,8 @@ const game = {
     image: {},
     isGameOver: true,
     score: 0,
-    timer: null
+    timer: null,
+    kickback: false
 };
 
 let imageLoadCounter = 0;
@@ -55,6 +56,14 @@ document.onkeydown = function(e) {
   }
 }
 
+canvas.addEventListener('click', function() {
+  if (game.isGameOver) {
+    init(); // ゲーム再スタート
+  } else if (game.dino.moveY === 0) {
+    game.dino.moveY = -41; // ジャンプ
+  }
+});
+
 function ticker() {
   // 画面クリア
   ctx.clearRect(0,0, canvas.width, canvas.height);
@@ -74,10 +83,17 @@ function ticker() {
   drawScore();
   // 当たり判定
   hitCheck();
-
+  // キックバックチェック
+  kickbackCheck();
   // カウンタの更新
   game.score += 1
   game.counter = (game.counter + 1) % 1000000;
+}
+
+function kickbackCheck(){
+  if (game.kickback === false && game.score >= 1000){
+    game.kickback = true
+  }
 }
 
 function moveDino(){
