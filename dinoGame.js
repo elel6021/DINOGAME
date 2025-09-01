@@ -5,7 +5,7 @@ const imageNames = ['bird', 'cactus', 'dino'];
 // グローバルなgameオブジェクト
 const game = {
     counter: 0,
-    bgm1: new Audio('bgm/fieldsong.mp3'),
+    bgm1: new Audio('bgm/fieldSong.mp3'),
     bgm2: new Audio('bgm/jump.mp3'),
     bgmdead: new Audio('bgm/dead.mp3'),
     enemys: [],
@@ -87,13 +87,13 @@ canvas.addEventListener('click', function() {
   if (game.state === 'init') {
     start();
   }
-  if (game.state === 'gameover') {
-    init(); // ゲーム再スタート
-  } 
   if (game.dino.moveY === 0) {
     game.dino.moveY = -41; // ジャンプ
     game.bgm2.play();
   }
+  if (game.state === 'gameover') {
+    init(); // ゲーム再スタート
+  } 
 });
 
 function ticker() {
