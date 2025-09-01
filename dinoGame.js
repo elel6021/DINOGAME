@@ -6,6 +6,7 @@ const imageNames = ['bird', 'cactus', 'dino'];
 const game = {
     counter: 0,
     enemys: [],
+    enemyCountdown: 0,
     image: {},
     isGameOver: true,
     score: 0,
@@ -35,6 +36,8 @@ function init() {
   game.score = 0;
   createDino();// 恐竜の登場
   game.timer = setInterval(ticker, 30);
+  game.enemyCountdown = 0;
+  game.kickback = false;
 }
 
 function createDino() {
@@ -73,12 +76,7 @@ function ticker() {
     createBackGround();
   }
   // 敵キャラクタの生成
-  if(Math.floor(Math.random() * (100 - game.score / 100)) <= 0){
-    createCactus();
-  }
-  if(Math.floor(Math.random() * (200 - game.score / 100)) <= 0){
-    createBird();
-  }
+  createEnemys();
   // キャラクタの移動
   moveBackGrounds();
   moveDino();
@@ -95,6 +93,7 @@ function ticker() {
   // カウンタの更新
   game.score += 1
   game.counter = (game.counter + 1) % 1000000;
+  game.enemyCountdown -= 1;
 }
 
 function createBackGround(){
@@ -151,9 +150,29 @@ function drawEnemys() {
   }
 }
 
-function createCactus() {
+function createEnemys(){
+  if (game.enemyCountdown === 0) {
+    game.enemyCountdown = 60 -Math.floor(game.score / 100);
+    if (game.enemyCountdown <= 30) game.enemyCountdown = 30;
+    switch(Math.floor(Math.random() * 3)) {
+      case 0:
+        createCactus(canvas.width + game.image.cactus.width / 2);
+        break;
+      case 1:
+        createBird();
+        break;
+      case 2:
+        createCactus(canvas.width + game.image.cactus.width / 2);
+        createCactus(canvas.width + game.image.cactus.width * 3 / 2);
+        break;
+    }
+  }
+}
+
+
+function createCactus(createX) {
   game.enemys.push({
-    x: canvas.width + game.image.cactus.width / 2,
+    x: createX,
     y: canvas.height - game.image.cactus.height / 2,
     width: game.image.cactus.width,
     height: game.image.cactus.height,
