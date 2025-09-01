@@ -5,15 +5,20 @@ const imageNames = ['bird', 'cactus', 'dino'];
 // グローバルなgameオブジェクト
 const game = {
     counter: 0,
+    bgm1: new Audio('bgm/fieldsong.mp3'),
+    bgm2: new Audio('bgm/jump.mp3'),
+    bgmdead: new Audio('bgm/dead.mp3'),
     enemys: [],
     enemyCountdown: 0,
     image: {},
-    isGameOver: true,
+    state: 'loading',
     score: 0,
     timer: null,
     kickback: false,
     backGrounds: []
 };
+
+game.bgm1.loop = true;
 
 let imageLoadCounter = 0;
 for (let imageName of imageNames) {
@@ -32,12 +37,26 @@ for (let imageName of imageNames) {
 function init() {
   game.counter = 0;
   game.enemys = [];
-  game.isGameOver = false;
+  game.state = "init";
+  //画面クリア
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   game.score = 0;
   createDino();// 恐竜の登場
-  game.timer = setInterval(ticker, 30);
+  drawDino();
+  createBackGround();
+  drawBackGrounds();
+  ctx.fillStyle = 'black';
+  ctx.font = 'bold 60px serif';
+  ctx.fillText('Press Any key', 60, 150);
+  ctx.fillText('or Click to Start', 150, 230);
   game.enemyCountdown = 0;
   game.kickback = false;
+}
+
+function start() {
+  game.state = 'gaming';
+  game.bgm1.play();
+  game.timer = setInterval(ticker, 30);
 }
 
 function createDino() {
@@ -52,19 +71,28 @@ function createDino() {
 }
 
 document.onkeydown = function(e) {
+  if(e.key === ' ' && game.state === 'init') {
+    start();
+  }
   if(e.key === ' ' && game.dino.moveY === 0){
     game.dino.moveY = -41; // ジャンプ
+    game.bgm2.play();
   }
-  if(e.key === 'Enter' && game.isGameOver) {
+  if(e.key === 'Enter' && game.state === 'gameover') {
     init(); //ゲームの再スタート
   }
 }
 
 canvas.addEventListener('click', function() {
-  if (game.isGameOver) {
+  if (game.state === 'init') {
+    start();
+  }
+  if (game.state === 'gameover') {
     init(); // ゲーム再スタート
-  } else if (game.dino.moveY === 0) {
+  } 
+  if (game.dino.moveY === 0) {
     game.dino.moveY = -41; // ジャンプ
+    game.bgm2.play();
   }
 });
 
@@ -207,7 +235,8 @@ function hitCheck() {
       Math.abs(game.dino.y - enemy.y) < (game.dino.height * 0.5 / 2 + enemy.height * 0.9 / 2)
      ) //当たっている場合
      {
-       game.isGameOver = true;
+       game.state = 'gameover';
+       game.bgm1.pause();
        ctx.font = 'bold 100px serif';
        ctx.fillText(`Game over!`, 150, 200);
        clearInterval(game.timer);
