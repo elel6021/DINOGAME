@@ -10,7 +10,8 @@ const game = {
     isGameOver: true,
     score: 0,
     timer: null,
-    kickback: false
+    kickback: false,
+    backGrounds: []
 };
 
 let imageLoadCounter = 0;
@@ -67,6 +68,10 @@ canvas.addEventListener('click', function() {
 function ticker() {
   // 画面クリア
   ctx.clearRect(0,0, canvas.width, canvas.height);
+  //背景の作成
+  if (game.counter % 20 === 0 ) {
+    createBackGround();
+  }
   // 敵キャラクタの生成
   if(Math.floor(Math.random() * (100 - game.score / 100)) <= 0){
     createCactus();
@@ -75,9 +80,11 @@ function ticker() {
     createBird();
   }
   // キャラクタの移動
+  moveBackGrounds();
   moveDino();
   moveEnemys();
   // キャラクタの描画
+  drawBackGrounds();
   drawDino();
   drawEnemys();
   drawScore();
@@ -88,6 +95,33 @@ function ticker() {
   // カウンタの更新
   game.score += 1
   game.counter = (game.counter + 1) % 1000000;
+}
+
+function createBackGround(){
+  game.backGrounds = [];
+  for (let x = 0; x <= canvas.width; x+=200){
+    game.backGrounds.push({
+      x: x,
+      y: canvas.height,
+      width: 200,
+      moveX: -10,
+    });
+  }
+}
+
+function moveBackGrounds() {
+  for (const backGround of game.backGrounds) {
+    backGround.x += backGround.moveX;
+  }
+}
+
+function drawBackGrounds() {
+  ctx.fillStyle = 'sienna';
+  for (const backGround of game.backGrounds) {
+    ctx.fillRect(backGround.x, backGround.y - 5, backGround.width, 5);
+    ctx.fillRect(backGround.x+20,backGround.y-10,backGround.width-40,5);
+    ctx.fillRect(backGround.x+50,backGround.y-15,backGround.width-100,5);
+  }
 }
 
 function kickbackCheck(){
@@ -163,6 +197,7 @@ function hitCheck() {
 }
 
 function drawScore() {
+  ctx.fillStyle = 'black';
   ctx.font = '24px serif';
   ctx.fillText(`score: ${game.score}`, 0, 30)
 }
