@@ -56,7 +56,7 @@ function init() {
 function start() {
   game.state = 'gaming';
   game.bgm1.play();
-  game.timer = setInterval(ticker, 300000);
+  game.timer = setInterval(ticker, 30);
 }
 
 function createDino() {
