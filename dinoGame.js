@@ -47,7 +47,7 @@ function init() {
   drawBackGrounds();
   ctx.fillStyle = 'black';
   ctx.font = 'bold 60px serif';
-  ctx.fillText('Press Any key', 60, 150);
+  ctx.fillText('Press Space key', 60, 150);
   ctx.fillText('or Click to Start', 150, 230);
   game.enemyCountdown = 0;
   game.kickback = false;
