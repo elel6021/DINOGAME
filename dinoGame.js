@@ -1,5 +1,7 @@
 const canvas = document.getElementById("canvas");
+const canvasBackground = document.getElementById("canvas-background");
 const ctx = canvas.getContext("2d");
+const ctxBackground = canvasBackground.getContext("2d");
 const imageNames = ['bird', 'cactus', 'dino', 'dino2'];
 
 // グローバルなgameオブジェクト
@@ -40,6 +42,7 @@ function init() {
   game.state = "init";
   //画面クリア
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctxBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height);
   game.score = 0;
   createDino();// 恐竜の登場
   drawDino();
@@ -99,6 +102,7 @@ canvas.addEventListener('click', function() {
 function ticker() {
   // 画面クリア
   ctx.clearRect(0,0, canvas.width, canvas.height);
+  ctxBackground.clearRect(0,0, canvasBackground.width, canvasBackground.height);
   //背景の作成
   if (game.counter % 20 === 0 ) {
     createBackGround();
@@ -143,11 +147,11 @@ function moveBackGrounds() {
 }
 
 function drawBackGrounds() {
-  ctx.fillStyle = 'sienna';
+  ctxBackground.fillStyle = 'sienna';
   for (const backGround of game.backGrounds) {
-    ctx.fillRect(backGround.x, backGround.y - 5, backGround.width, 5);
-    ctx.fillRect(backGround.x+20,backGround.y-10,backGround.width-40,5);
-    ctx.fillRect(backGround.x+50,backGround.y-15,backGround.width-100,5);
+    ctxBackground.fillRect(backGround.x, backGround.y - 5, backGround.width, 5);
+    ctxBackground.fillRect(backGround.x+20,backGround.y-10,backGround.width-40,5);
+    ctxBackground.fillRect(backGround.x+50,backGround.y-15,backGround.width-100,5);
   }
 }
 
@@ -168,7 +172,7 @@ function moveDino(){
 }
 
 function drawDino() {
-  // game.counterの値に応じて画像を切り替える　うまくいかない
+  // game.counterの値に応じて画像を切り替える
   ctx.clearRect(game.dino.x - game.dino.width / 2, game.dino.y - game.dino.height / 2, game.dino.width, game.dino.height);
   const frame = game.counter % 30 < 15 ? 0 : 1;
   const dinoImage = frame === 0 ? game.image.dino2 : game.image.dino;
