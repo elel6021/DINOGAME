@@ -1,6 +1,6 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const imageNames = ['bird', 'cactus', 'dino'];
+const imageNames = ['bird', 'cactus', 'dino', 'dino2'];
 
 // グローバルなgameオブジェクト
 const game = {
@@ -56,7 +56,7 @@ function init() {
 function start() {
   game.state = 'gaming';
   game.bgm1.play();
-  game.timer = setInterval(ticker, 30);
+  game.timer = setInterval(ticker, 300000);
 }
 
 function createDino() {
@@ -168,8 +168,12 @@ function moveDino(){
 }
 
 function drawDino() {
-  ctx.drawImage(game.image.dino, game.dino.x - game.dino.width /2,
-    game.dino.y - game.dino.height / 2, );
+  // game.counterの値に応じて画像を切り替える　うまくいかない
+  ctx.clearRect(game.dino.x - game.dino.width / 2, game.dino.y - game.dino.height / 2, game.dino.width, game.dino.height);
+  const frame = game.counter % 30 < 15 ? 0 : 1;
+  const dinoImage = frame === 0 ? game.image.dino2 : game.image.dino;
+  ctx.drawImage(dinoImage, game.dino.x - game.dino.width /2,
+    game.dino.y - game.dino.height / 2 );
 }
 
 function drawEnemys() {
